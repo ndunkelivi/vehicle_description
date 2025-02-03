@@ -1,71 +1,17 @@
 {
-  "title": "VehiclePart",
-  "type": "object",
-  "examples": [
-    {
-      "axles": [
-        {
-          "name": "string",
-          "position": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "wheels": [
-            {
-              "position": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "tire": {
-                "diameter": 0,
-                "width": 0
-              }
-            }
-          ]
-        }
-      ],
-      "geometry": {
-        "length": 0,
-        "width": 0,
-        "height": 0
-      }
-    }
-  ],
-  "description": "Describes the properties of a vehicle part. A vehicle part is either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up",
-  "properties": {
-    "geometry": {
-      "$ref": "#/definitions/Geometry"
-    },
-    "axles": {
-      "type": "array",
-      "description": "Array of axles\n",
-      "items": {
-        "$ref": "#/definitions/Axle"
-      }
-    },
-    "reference_position": {
-      "$ref": "#/definitions/Position",
-      "description": "The reference position of the root coordinate system of the vehicle"
-    },
-    "front_joint": {
-      "$ref": "#/definitions/Joint",
-      "x-stoplight": {
-        "id": "941spznhu75k8"
-      }
-    },
-    "rear_joint": {
-      "$ref": "#/definitions/Joint",
-      "x-stoplight": {
-        "id": "a5ccp9adpr4ex"
-      }
+  "title": "VehicleDescription",
+  "x-stoplight": {
+    "id": "2lqdk3cj4sez7"
+  },
+  "type": "array",
+  "minItems": 1,
+  "description": "Array of vehicle parts. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
+  "items": {
+    "$ref": "#/definitions/VehiclePart",
+    "x-stoplight": {
+      "id": "hiy3gs0xmn9r5"
     }
   },
-  "required": [
-    "geometry",
-    "axles"
-  ],
   "definitions": {
     "Axle": {
       "title": "Axle",
@@ -145,6 +91,78 @@
           "type": "number"
         }
       }
+    },
+    "VehiclePart": {
+      "x-stoplight": {
+        "id": "hiy3gs0xmn9r5"
+      },
+      "title": "VehiclePart",
+      "type": "object",
+      "examples": [
+        {
+          "axles": [
+            {
+              "name": "string",
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "wheels": [
+                {
+                  "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                  },
+                  "tire": {
+                    "diameter": 0,
+                    "width": 0
+                  }
+                }
+              ]
+            }
+          ],
+          "geometry": {
+            "length": 0,
+            "width": 0,
+            "height": 0
+          }
+        }
+      ],
+      "description": "Describes the properties of a vehicle part. A vehicle part is either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up",
+      "properties": {
+        "geometry": {
+          "$ref": "#/definitions/Geometry"
+        },
+        "axles": {
+          "type": "array",
+          "description": "Array of axles\n",
+          "items": {
+            "$ref": "#/definitions/Axle"
+          }
+        },
+        "reference_position": {
+          "$ref": "#/definitions/Position",
+          "description": "The reference position of the root coordinate system of the vehicle"
+        },
+        "front_joint": {
+          "$ref": "#/definitions/Joint",
+          "x-stoplight": {
+            "id": "941spznhu75k8"
+          }
+        },
+        "rear_joint": {
+          "$ref": "#/definitions/Joint",
+          "x-stoplight": {
+            "id": "a5ccp9adpr4ex"
+          }
+        }
+      },
+      "required": [
+        "geometry",
+        "axles"
+      ]
     },
     "Wheel": {
       "title": "Wheel",

@@ -1,0 +1,162 @@
+{
+  "title": "VehiclePart",
+  "type": "object",
+  "examples": [
+    {
+      "axles": [
+        {
+          "name": "string",
+          "position": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+          },
+          "wheels": [
+            {
+              "position": {
+                "x": 0,
+                "y": 0,
+                "z": 0
+              },
+              "tire": {
+                "diameter": 0,
+                "width": 0
+              }
+            }
+          ]
+        }
+      ],
+      "geometry": {
+        "length": 0,
+        "width": 0,
+        "height": 0
+      }
+    }
+  ],
+  "description": "All positions refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up",
+  "properties": {
+    "geometry": {
+      "$ref": "#/definitions/Geometry"
+    },
+    "axles": {
+      "type": "array",
+      "description": "Array of axles\n",
+      "items": {
+        "$ref": "#/definitions/Axle"
+      }
+    },
+    "reference_position": {
+      "$ref": "#/definitions/Position",
+      "description": "The reference position of the root coordinate system of the vehicle"
+    },
+    "front_joint_position": {
+      "$ref": "#/definitions/Position"
+    },
+    "rear_joint_position": {
+      "$ref": "#/definitions/Position"
+    }
+  },
+  "required": [
+    "geometry",
+    "axles"
+  ],
+  "definitions": {
+    "Axle": {
+      "title": "Axle",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/definitions/Position"
+        },
+        "wheels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Wheel"
+          }
+        }
+      }
+    },
+    "Box": {
+      "title": "Box",
+      "type": "object",
+      "properties": {
+        "length": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number"
+        },
+        "height": {
+          "type": "number"
+        }
+      }
+    },
+    "Geometry": {
+      "title": "Geometry",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "Box"
+          ]
+        },
+        "dimensions": {
+          "$ref": "#/definitions/Box"
+        },
+        "position": {
+          "$ref": "#/definitions/Position"
+        }
+      },
+      "description": "What is the anchor point which the position refers to?"
+    },
+    "Position": {
+      "title": "Position",
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "z": {
+          "type": "number"
+        }
+      }
+    },
+    "Wheel": {
+      "title": "Wheel",
+      "type": "object",
+      "description": "Tire diameter or radius?\nAdditional properties like stiffness etc?\nwheel name?",
+      "properties": {
+        "position": {
+          "$ref": "#/definitions/Position"
+        },
+        "tire": {
+          "type": "object",
+          "description": "The tire is the rubber component that fits around the wheel. ",
+          "required": [
+            "diameter",
+            "width"
+          ],
+          "properties": {
+            "diameter": {
+              "type": "number"
+            },
+            "width": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": [
+        "position",
+        "tire"
+      ]
+    }
+  }
+}

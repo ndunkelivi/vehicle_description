@@ -33,7 +33,7 @@
       }
     }
   ],
-  "description": "All positions refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up",
+  "description": "Describes the properties of a vehicle part. A vehicle part is either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up",
   "properties": {
     "geometry": {
       "$ref": "#/definitions/Geometry"
@@ -49,11 +49,17 @@
       "$ref": "#/definitions/Position",
       "description": "The reference position of the root coordinate system of the vehicle"
     },
-    "front_joint_position": {
-      "$ref": "#/definitions/Position"
+    "front_joint": {
+      "$ref": "#/definitions/Joint",
+      "x-stoplight": {
+        "id": "941spznhu75k8"
+      }
     },
-    "rear_joint_position": {
-      "$ref": "#/definitions/Position"
+    "rear_joint": {
+      "$ref": "#/definitions/Joint",
+      "x-stoplight": {
+        "id": "a5ccp9adpr4ex"
+      }
     }
   },
   "required": [
@@ -73,30 +79,17 @@
         },
         "wheels": {
           "type": "array",
+          "description": "An array of wheels attached to the axle. The positions of the wheels are in reference to the axle's position.",
           "items": {
             "$ref": "#/definitions/Wheel"
           }
         }
       }
     },
-    "Box": {
-      "title": "Box",
-      "type": "object",
-      "properties": {
-        "length": {
-          "type": "number"
-        },
-        "width": {
-          "type": "number"
-        },
-        "height": {
-          "type": "number"
-        }
-      }
-    },
     "Geometry": {
       "title": "Geometry",
       "type": "object",
+      "description": "What is the anchor point which the position refers to?",
       "properties": {
         "type": {
           "type": "string",
@@ -105,13 +98,38 @@
           ]
         },
         "dimensions": {
-          "$ref": "#/definitions/Box"
+          "$ref": "./BoxDimensions.json"
         },
         "position": {
           "$ref": "#/definitions/Position"
         }
+      }
+    },
+    "Joint": {
+      "x-stoplight": {
+        "id": "a5ccp9adpr4ex"
       },
-      "description": "What is the anchor point which the position refers to?"
+      "title": "Joint",
+      "type": "object",
+      "properties": {
+        "position": {
+          "$ref": "#/definitions/Position",
+          "x-stoplight": {
+            "id": "eatp511bha0ah"
+          },
+          "description": "The position of the joint"
+        },
+        "max_angle": {
+          "type": "number",
+          "x-stoplight": {
+            "id": "2zcddbhksd0bq"
+          },
+          "exclusiveMinimum": 0,
+          "maximum": 90,
+          "description": "Represents the maximum allowable angle to which the joint can extend."
+        }
+      },
+      "description": "Describes a hinge joint where two vehicle parts are linked together. "
     },
     "Position": {
       "title": "Position",
@@ -131,7 +149,7 @@
     "Wheel": {
       "title": "Wheel",
       "type": "object",
-      "description": "Tire diameter or radius?\nAdditional properties like stiffness etc?\nwheel name?",
+      "description": "Describes a wheel.  \n\nTire diameter or radius?\nAdditional properties like stiffness etc?\nwheel name?",
       "properties": {
         "position": {
           "$ref": "#/definitions/Position"

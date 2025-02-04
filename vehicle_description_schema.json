@@ -2,97 +2,135 @@
   "title": "VehicleDescription",
   "type": "array",
   "minItems": 1,
-  "description": "Array of vehicle parts. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
+  "description": "Represents a full vehicle combination as an array of vehicle parts. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
   "items": {
-    "$ref": "#/definitions/VehiclePart",
-    "x-stoplight": {
-      "id": "hiy3gs0xmn9r5"
-    }
+    "$ref": "#/definitions/VehiclePart"
   },
   "definitions": {
     "Axle": {
       "title": "Axle",
       "type": "object",
+      "description": "Represents an axle of a vehicle part.",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "The name or identifier of the axle, e.g. 'front_axle'."
         },
         "position": {
-          "$ref": "#/definitions/Position"
+          "$ref": "#/definitions/Position",
+          "description": "The position of the axle on the vehicle part."
         },
         "wheels": {
           "type": "array",
-          "description": "An array of wheels attached to the axle. The positions of the wheels are in reference to the axle's position.",
+          "description": "Represents the wheels mounted to the axle.",
           "items": {
             "$ref": "#/definitions/Wheel"
           }
         }
-      }
+      },
+      "required": [
+        "name",
+        "position",
+        "wheels"
+      ]
+    },
+    "Box": {
+      "description": "The dimensions of the geometry.",
+      "title": "Box",
+      "type": "object",
+      "properties": {
+        "length": {
+          "type": "number",
+          "description": "The length of the box."
+        },
+        "width": {
+          "type": "number",
+          "description": "The width of the box."
+        },
+        "height": {
+          "type": "number",
+          "description": "The height of the box."
+        }
+      },
+      "required": [
+        "length",
+        "width",
+        "height"
+      ]
     },
     "Geometry": {
+      "description": "Represents the 3D geometry of the vehicle part, e.g. the bounding box of the chassis.",
       "title": "Geometry",
       "type": "object",
-      "description": "What is the anchor point which the position refers to?",
       "properties": {
         "type": {
           "type": "string",
           "enum": [
             "Box"
-          ]
+          ],
+          "description": "The type of the geometry."
         },
         "dimensions": {
-          "$ref": "./BoxDimensions.json"
+          "$ref": "#/definitions/Box",
+          "description": "The dimensions of the geometry."
         },
         "position": {
-          "$ref": "#/definitions/Position"
+          "$ref": "#/definitions/Position",
+          "description": "The position of the anchor point of the geometry on the vehicle part. "
         }
-      }
+      },
+      "required": [
+        "type",
+        "dimensions",
+        "position"
+      ]
     },
     "Joint": {
-      "x-stoplight": {
-        "id": "a5ccp9adpr4ex"
-      },
+      "description": "Represents the rear joint of the vehicle part.",
       "title": "Joint",
       "type": "object",
       "properties": {
         "position": {
           "$ref": "#/definitions/Position",
-          "x-stoplight": {
-            "id": "eatp511bha0ah"
-          },
-          "description": "The position of the joint"
+          "description": "The position of the joint on the vehicle part."
         },
         "max_angle": {
           "type": "number",
-          "x-stoplight": {
-            "id": "2zcddbhksd0bq"
-          },
           "exclusiveMinimum": 0,
           "maximum": 90,
-          "description": "Represents the maximum allowable angle to which the joint can extend."
+          "description": "The maximum allowable angle to which the joint can extend."
         }
       },
-      "description": "Describes a hinge joint where two vehicle parts are linked together. "
+      "required": [
+        "position",
+        "max_angle"
+      ]
     },
     "Position": {
+      "description": "The reference position of the root coordinate system of the vehicle part. The root coordinate system refers to the primary reference frame used to define the position and orientation of the vehicle part in a three-dimsional space.",
       "title": "Position",
       "type": "object",
       "properties": {
         "x": {
-          "type": "number"
+          "type": "number",
+          "description": "The x-component of the position."
         },
         "y": {
-          "type": "number"
+          "type": "number",
+          "description": "The y-component of the position."
         },
         "z": {
-          "type": "number"
+          "type": "number",
+          "description": "The z-component of the position."
         }
-      }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ]
     },
     "VehiclePart": {
-      "x-stoplight": {
-        "id": "hiy3gs0xmn9r5"
-      },
       "title": "VehiclePart",
       "type": "object",
       "examples": [
@@ -127,33 +165,34 @@
           }
         }
       ],
-      "description": "Describes the properties of a vehicle part. A vehicle part is either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up",
+      "description": "Represents either a vehicle part, which can be either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up\n  \nFor all nested components, the position of the nested component is defined relative to the position of the parent component. E.g. the position of a wheel is defined relative to the position of the axle, that the wheel is mounted on.\n\nAll units are given in meters or degrees.",
       "properties": {
         "geometry": {
-          "$ref": "#/definitions/Geometry"
+          "$ref": "#/definitions/Geometry",
+          "description": "Represents the 3D geometry of the vehicle part, e.g. the bounding box of the chassis."
+        },
+        "ground_clearance": {
+          "type": "number",
+          "description": "The minimum distance between the lowest point of the chassis and the ground."
+        },
+        "reference_position": {
+          "$ref": "#/definitions/Position",
+          "description": "The reference position of the root coordinate system of the vehicle part. The root coordinate system refers to the primary reference frame used to define the position and orientation of the vehicle part in a three-dimsional space."
         },
         "axles": {
           "type": "array",
-          "description": "Array of axles\n",
+          "description": "Represents the axles of the vehicle part.",
           "items": {
             "$ref": "#/definitions/Axle"
           }
         },
-        "reference_position": {
-          "$ref": "#/definitions/Position",
-          "description": "The reference position of the root coordinate system of the vehicle"
-        },
         "front_joint": {
           "$ref": "#/definitions/Joint",
-          "x-stoplight": {
-            "id": "941spznhu75k8"
-          }
+          "description": "Represents the front joint of the vehicle part."
         },
         "rear_joint": {
           "$ref": "#/definitions/Joint",
-          "x-stoplight": {
-            "id": "a5ccp9adpr4ex"
-          }
+          "description": "Represents the rear joint of the vehicle part."
         }
       },
       "required": [
@@ -164,10 +203,11 @@
     "Wheel": {
       "title": "Wheel",
       "type": "object",
-      "description": "Describes a wheel.  \n\nTire diameter or radius?\nAdditional properties like stiffness etc?\nwheel name?",
+      "description": "Represents a wheel.  ",
       "properties": {
         "position": {
-          "$ref": "#/definitions/Position"
+          "$ref": "#/definitions/Position",
+          "description": "The position of the wheel with regard to the coordinate system of the axle which the wheel is mounted on."
         },
         "tire": {
           "type": "object",
@@ -178,10 +218,12 @@
           ],
           "properties": {
             "diameter": {
-              "type": "number"
+              "type": "number",
+              "description": "The diameter of the tire."
             },
             "width": {
-              "type": "number"
+              "type": "number",
+              "description": "The width of the tire."
             }
           }
         }

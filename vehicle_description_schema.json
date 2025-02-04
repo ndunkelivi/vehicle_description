@@ -26,16 +26,35 @@
           "items": {
             "$ref": "#/definitions/Wheel"
           }
+        },
+        "steering": {
+          "type": "object",
+          "description": "The steering properties of the axle.",
+          "required": [
+            "steerable",
+            "max_angle"
+          ],
+          "properties": {
+            "steerable": {
+              "type": "boolean",
+              "description": "Whether the axle is steerable."
+            },
+            "max_angle": {
+              "type": "number",
+              "description": "The maximum steering angle."
+            }
+          }
         }
       },
       "required": [
         "name",
         "position",
-        "wheels"
+        "wheels",
+        "steering"
       ]
     },
     "Box": {
-      "description": "The dimensions of the geometry.",
+      "description": "Box geometry.",
       "title": "Box",
       "type": "object",
       "properties": {
@@ -71,8 +90,13 @@
           "description": "The type of the geometry."
         },
         "dimensions": {
-          "$ref": "#/definitions/Box",
-          "description": "The dimensions of the geometry."
+          "description": "The dimensions of the geometry.",
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Box",
+              "description": "Box geometry."
+            }
+          ]
         },
         "position": {
           "$ref": "#/definitions/Position",
@@ -133,39 +157,8 @@
     "VehiclePart": {
       "title": "VehiclePart",
       "type": "object",
-      "examples": [
-        {
-          "axles": [
-            {
-              "name": "string",
-              "position": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-              },
-              "wheels": [
-                {
-                  "position": {
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                  },
-                  "tire": {
-                    "diameter": 0,
-                    "width": 0
-                  }
-                }
-              ]
-            }
-          ],
-          "geometry": {
-            "length": 0,
-            "width": 0,
-            "height": 0
-          }
-        }
-      ],
-      "description": "Represents either a vehicle part, which can be either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up\n  \nFor all nested components, the position of the nested component is defined relative to the position of the parent component. E.g. the position of a wheel is defined relative to the position of the axle, that the wheel is mounted on.\n\nAll units are given in meters or degrees.",
+      "examples": [],
+      "description": "Represents a vehicle part, which can be either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up\n  \nFor all nested components, the position of the nested component is defined relative to the position of the parent component. E.g. the position of a wheel is defined relative to the position of the axle, that the wheel is mounted on.\n\nAll units are given in meters or degrees.",
       "properties": {
         "geometry": {
           "$ref": "#/definitions/Geometry",
@@ -197,6 +190,7 @@
       },
       "required": [
         "geometry",
+        "reference_position",
         "axles"
       ]
     },

@@ -14,7 +14,7 @@
       "properties": {
         "id": {
           "type": "number",
-          "description": "Identifier of the axle"
+          "description": "The ID of the axle."
         },
         "name": {
           "type": "string",
@@ -35,17 +35,41 @@
           "type": "object",
           "description": "The steering properties of the axle.",
           "required": [
-            "steerable",
-            "max_angle"
+            "type"
           ],
           "properties": {
-            "steerable": {
-              "type": "boolean",
-              "description": "Whether the axle is steerable."
+            "type": {
+              "type": "string",
+              "description": "The steering type of this axle:\n\n* fixed: The axle is not steerable\n* forced: The axle is steerable and the steering angle is active set by a driver or automatic system\n* friction: The axle is steerable and the steering angle adjusts passively due to ground friction.",
+              "enum": [
+                "fixed",
+                "forced",
+                "friction"
+              ]
+            },
+            "reference": {
+              "type": "string",
+              "enum": [
+                "remote",
+                "steering_axle",
+                "articulation_angle"
+              ],
+              "description": "The reference must be set if the steering type is 'forced'. The reference determines how the steering angle is set:\n\n* remote: The steering angle is set by the driver or automatic system\n* steering_axle: The steering angle is determined by a steering function based on the steering angle of another axle (see 'reference_axle_id')\n* articulation_angle: The steering angle is determined by a steering function based on the articulation angle of the vehicle part which this axle belongs to. "
+            },
+            "reference_axle_id": {
+              "type": "number",
+              "description": "The ID of the axle, whose steering angle is used as input for the steering function to calculate this axle's steering angle."
             },
             "max_angle": {
               "type": "number",
               "description": "The maximum steering angle."
+            },
+            "functions": {
+              "type": "array",
+              "description": "Array of steering functions. ",
+              "items": {
+                "type": "object"
+              }
             }
           }
         }

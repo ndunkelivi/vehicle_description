@@ -12,9 +12,13 @@
       "type": "object",
       "description": "Represents an axle of a vehicle part.",
       "properties": {
+        "id": {
+          "type": "number",
+          "description": "Identifier of the axle"
+        },
         "name": {
           "type": "string",
-          "description": "The name or identifier of the axle, e.g. 'front_axle'."
+          "description": "The name of the axle, e.g. 'front_axle'."
         },
         "position": {
           "$ref": "#/definitions/Position",
@@ -47,7 +51,7 @@
         }
       },
       "required": [
-        "name",
+        "id",
         "position",
         "wheels",
         "steering"
@@ -160,6 +164,14 @@
       "examples": [],
       "description": "Represents a vehicle part, which can be either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up\n  \nFor all nested components, the position of the nested component is defined relative to the position of the parent component. E.g. the position of a wheel is defined relative to the position of the axle, that the wheel is mounted on.\n\nAll units are given in meters or degrees.",
       "properties": {
+        "id": {
+          "type": "number",
+          "description": "The ID of the vehicle part."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the vehicle part."
+        },
         "geometry": {
           "$ref": "#/definitions/Geometry",
           "description": "Represents the 3D geometry of the vehicle part, e.g. the bounding box of the chassis."
@@ -189,6 +201,7 @@
         }
       },
       "required": [
+        "id",
         "geometry",
         "reference_position",
         "axles"
@@ -199,6 +212,10 @@
       "type": "object",
       "description": "Represents a wheel.  ",
       "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name or identifier of the wheel, e.g. 'left_wheel'."
+        },
         "position": {
           "$ref": "#/definitions/Position",
           "description": "The position of the wheel with regard to the coordinate system of the axle which the wheel is mounted on."

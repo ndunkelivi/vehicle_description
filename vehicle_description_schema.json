@@ -1,11 +1,27 @@
 {
-  "title": "VehicleDescription",
-  "type": "array",
-  "minItems": 1,
-  "description": "Represents a full vehicle combination as an array of vehicle parts. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
-  "items": {
-    "$ref": "#/definitions/VehiclePart"
+  "title": "VehicleDescriptionFormat",
+  "type": "object",
+  "description": "The Vehicle Description Format is a generalized description format for multi-part vehicles developed by Fraunhofer IVI.",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "The version of the vehicle description format (MAJOR.MINOR)",
+      "default": 0.1,
+      "readOnly": true
+    },
+    "vehicle_description": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Represents a full vehicle combination as an array of vehicle parts. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
+      "items": {
+        "$ref": "#/definitions/VehiclePart"
+      }
+    }
   },
+  "required": [
+    "version",
+    "vehicle_description"
+  ],
   "definitions": {
     "Axle": {
       "title": "Axle",

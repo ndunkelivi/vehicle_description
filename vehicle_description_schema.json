@@ -40,7 +40,7 @@
           "properties": {
             "type": {
               "type": "string",
-              "description": "The steering type of this axle:\n\n* fixed: The axle is not steerable\n* forced: The axle is steerable and the steering angle is active set by a driver or automatic system\n* friction: The axle is steerable and the steering angle adjusts passively due to ground friction.",
+              "description": "The steering type of this axle:\n\n* fixed: The axle is not steerable.\n* forced: The axle is steerable and the steering angle is actively set by a driver or automatic system.\n* friction: The axle is steerable and the steering angle adjusts passively due to ground friction.",
               "enum": [
                 "fixed",
                 "forced",
@@ -54,7 +54,7 @@
                 "steering_axle",
                 "articulation_angle"
               ],
-              "description": "The reference must be set if the steering type is 'forced'. The reference determines how the steering angle is set:\n\n* remote: The steering angle is set by the driver or automatic system\n* steering_axle: The steering angle is determined by a steering function based on the steering angle of another axle (see 'reference_axle_id')\n* articulation_angle: The steering angle is determined by a steering function based on the articulation angle of the vehicle part which this axle belongs to. "
+              "description": "The reference must be set if the steering type is 'forced'. The reference determines how the steering angle is set:\n\n* remote: The steering angle is set by the driver or automatic system.\n* steering_axle: The steering angle is determined by a steering function based on the steering angle of another axle (see 'reference_axle_id').\n* articulation_angle: The steering angle is determined by a steering function based on the articulation angle of the vehicle part which this axle belongs to. "
             },
             "reference_axle_id": {
               "type": "number",
@@ -106,9 +106,9 @@
       ]
     },
     "Geometry": {
-      "description": "Represents the 3D geometry of the vehicle part, e.g. the bounding box of the chassis.",
       "title": "Geometry",
       "type": "object",
+      "description": "Represents the 3D geometry of a vehicle part, e.g. the bounding box of the chassis. \n\nPossible types:\n\n* Box: The box geometry represents a cuboid with a fixed length, width and height. The anchor point of the box is its geometric center, also known as centroid. ",
       "properties": {
         "type": {
           "type": "string",
@@ -197,8 +197,7 @@
           "description": "The name of the vehicle part."
         },
         "geometry": {
-          "$ref": "#/definitions/Geometry",
-          "description": "Represents the 3D geometry of the vehicle part, e.g. the bounding box of the chassis."
+          "$ref": "#/definitions/Geometry"
         },
         "ground_clearance": {
           "type": "number",

@@ -1,7 +1,7 @@
 {
   "title": "VehicleDescriptionFormat",
   "type": "object",
-  "description": "The Vehicle Description Format is a generalized description format for multi-part vehicles developed by Fraunhofer IVI.",
+  "description": "The Vehicle Description Format is a generalized description format for multi-segment vehicles developed by Fraunhofer IVI.",
   "properties": {
     "version": {
       "type": "string",
@@ -9,24 +9,24 @@
       "default": 0.1,
       "readOnly": true
     },
-    "vehicle_description": {
+    "vehicleDescription": {
       "type": "array",
       "minItems": 1,
-      "description": "Represents a full vehicle combination as an array of vehicle parts. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
+      "description": "Represents a full vehicle combination as an array of vehicle segments. The first item describes the towing vehicle. The remaining items describe subsequently attached trailers. ",
       "items": {
-        "$ref": "#/definitions/VehiclePart"
+        "$ref": "#/definitions/VehicleSegment"
       }
     }
   },
   "required": [
     "version",
-    "vehicle_description"
+    "vehicleDescription"
   ],
   "definitions": {
     "Axle": {
       "title": "Axle",
       "type": "object",
-      "description": "Represents an axle of a vehicle part.",
+      "description": "Represents an axle of a vehicle segment.",
       "properties": {
         "id": {
           "type": "number",
@@ -36,9 +36,9 @@
           "type": "string",
           "description": "The name of the axle, e.g. 'front_axle'."
         },
-        "position": {
-          "$ref": "#/definitions/Position",
-          "description": "The position of the axle on the vehicle part."
+        "pose": {
+          "$ref": "#/definitions/Pose",
+          "description": "The pose of the axle on the vehicle segment."
         },
         "wheels": {
           "type": "array",
@@ -70,13 +70,13 @@
                 "steering_axle",
                 "articulation_angle"
               ],
-              "description": "The reference must be set if the steering type is 'forced'. The reference determines how the steering angle is set:\n\n* remote: The steering angle is set by the driver or automatic system.\n* steering_axle: The steering angle is determined by a steering function based on the steering angle of another axle (see 'reference_axle_id').\n* articulation_angle: The steering angle is determined by a steering function based on the articulation angle of the vehicle part which this axle belongs to. "
+              "description": "The reference must be set if the steering type is 'forced'. The reference determines how the steering angle is set:\n\n* remote: The steering angle is set by the driver or automatic system.\n* steering_axle: The steering angle is determined by a steering function based on the steering angle of another axle (see 'reference_axle_id').\n* articulation_angle: The steering angle is determined by a steering function based on the articulation angle of the vehicle segment which this axle belongs to. "
             },
-            "reference_axle_id": {
+            "referenceAxleID": {
               "type": "number",
               "description": "The ID of the axle, whose steering angle is used as input for the steering function to calculate this axle's steering angle."
             },
-            "max_angle": {
+            "maxAngle": {
               "type": "number",
               "description": "The maximum steering angle."
             },
@@ -92,7 +92,7 @@
       },
       "required": [
         "id",
-        "position",
+        "pose",
         "wheels",
         "steering"
       ]
@@ -124,45 +124,55 @@
     "Geometry": {
       "title": "Geometry",
       "type": "object",
-      "description": "Represents the 3D geometry of a vehicle part, e.g. the bounding box of the chassis. \n\nPossible types:\n\n* Box: The box geometry represents a cuboid with a fixed length, width and height. The anchor point of the box is its geometric center, also known as centroid. ",
+      "description": "Represents the 3D geometry of a vehicle segment or a part of the vehicle segment, e.g. the bounding box of the chassis. \n\nPossible types:\n\n* Box: The box geometry represents a cuboid with a fixed length, width and height. The anchor point of the box is its geometric center, also known as centroid. \n* Mesh: The mesh geometry represents a 3D mesh specified by the file path to the 3D mesh file.",
       "properties": {
         "type": {
           "type": "string",
           "enum": [
-            "Box"
+            "Box",
+            "Mesh"
           ],
           "description": "The type of the geometry."
         },
-        "dimensions": {
+        "parameter": {
           "description": "The dimensions of the geometry.",
           "anyOf": [
             {
               "$ref": "#/definitions/Box",
               "description": "Box geometry."
+            },
+            {
+              "$ref": "#/definitions/Mesh"
             }
           ]
         },
-        "position": {
-          "$ref": "#/definitions/Position",
-          "description": "The position of the anchor point of the geometry on the vehicle part. "
+        "pose": {
+          "$ref": "#/definitions/Pose",
+          "description": "The pose of the anchor point of the geometry on the vehicle segment. "
+        },
+        "collision": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the geometry is relevant for collision detection."
         }
       },
       "required": [
         "type",
-        "dimensions",
-        "position"
+        "parameter",
+        "pose",
+        "collision"
       ]
     },
     "Joint": {
-      "description": "Represents the rear joint of the vehicle part.",
+      "description": "Represents the rear joint of the vehicle segment.",
       "title": "Joint",
       "type": "object",
       "properties": {
-        "position": {
-          "$ref": "#/definitions/Position",
-          "description": "The position of the joint on the vehicle part."
+        "pose": {
+          "$ref": "#/definitions/Pose",
+          "description": "The pose of the joint on the vehicle segment."
         },
-        "max_angle": {
+        "maxAngle": {
           "type": "number",
           "exclusiveMinimum": 0,
           "maximum": 90,
@@ -170,79 +180,141 @@
         }
       },
       "required": [
-        "position",
-        "max_angle"
+        "pose",
+        "maxAngle"
       ]
     },
-    "Position": {
-      "description": "The reference position of the root coordinate system of the vehicle part. The root coordinate system refers to the primary reference frame used to define the position and orientation of the vehicle part in a three-dimsional space.",
-      "title": "Position",
+    "Mesh": {
+      "title": "Mesh",
       "type": "object",
+      "description": "Represents a 3D Mesh.",
       "properties": {
-        "x": {
-          "type": "number",
-          "description": "The x-component of the position."
+        "format": {
+          "type": "string",
+          "enum": [
+            "stl",
+            "dae",
+            "obj"
+          ],
+          "description": "The format of the mesh file."
         },
-        "y": {
-          "type": "number",
-          "description": "The y-component of the position."
-        },
-        "z": {
-          "type": "number",
-          "description": "The z-component of the position."
+        "meshFile": {
+          "type": "string",
+          "description": "The file path to the 3D mesh file."
         }
       },
       "required": [
-        "x",
-        "y",
-        "z"
+        "meshFile"
       ]
     },
-    "VehiclePart": {
-      "title": "VehiclePart",
+    "Pose": {
+      "description": "The reference pose of the root coordinate system of the vehicle segment. The root coordinate system refers to the primary reference frame used to define the pose of the vehicle segment in 3D space.",
+      "title": "Pose",
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "object",
+          "description": "Represents a 3D position.",
+          "required": [
+            "x",
+            "y",
+            "z"
+          ],
+          "properties": {
+            "x": {
+              "type": "number",
+              "description": "The x-component of the position (meters)."
+            },
+            "y": {
+              "type": "number",
+              "description": "The y-component of the position (meters)."
+            },
+            "z": {
+              "type": "number",
+              "description": "The z-component of the position (meters)."
+            }
+          }
+        },
+        "orientation": {
+          "type": "object",
+          "description": "Represents the rotation around fixed axis: first roll around x, then pitch around y and finally yaw around z. ",
+          "required": [
+            "r",
+            "p",
+            "y"
+          ],
+          "properties": {
+            "r": {
+              "type": "number",
+              "description": "The roll angle around the x-axis (degrees).",
+              "default": 0
+            },
+            "p": {
+              "type": "number",
+              "description": "The pitch angle around the y-axis (degrees).",
+              "default": 0
+            },
+            "y": {
+              "type": "number",
+              "description": "The yaw angle around the z-axis (degrees).",
+              "default": 0
+            }
+          }
+        }
+      },
+      "required": [
+        "position",
+        "orientation"
+      ]
+    },
+    "VehicleSegment": {
+      "title": "VehicleSegment",
       "type": "object",
       "examples": [],
-      "description": "Represents a vehicle part, which can be either a towing machine or a trailer. \n\nAll positions used for describing the vehicle part and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up\n  \nFor all nested components, the position of the nested component is defined relative to the position of the parent component. E.g. the position of a wheel is defined relative to the position of the axle, that the wheel is mounted on.\n\nAll units are given in meters or degrees.",
+      "description": "Represents a vehicle segment, which can be either a towing machine or a trailer. \n\nAll poses used for describing the vehicle segment and its components refer to a fixed cartesian coordinate system which can be arbitrarily chosen but is subject to following constraints:\n  * x - forwards\n  * y - left\n  * z - up\n  \nFor all nested components, the pose of the nested component is defined relative to the pose of the parent component. E.g. the pose of a wheel is defined relative to the pose of the axle, that the wheel is mounted on.\n\nAll units are given in meters or degrees.",
       "properties": {
         "id": {
           "type": "number",
-          "description": "The ID of the vehicle part."
+          "description": "The ID of the vehicle segment."
         },
         "name": {
           "type": "string",
-          "description": "The name of the vehicle part."
+          "description": "The name of the vehicle segment."
         },
         "geometry": {
-          "$ref": "#/definitions/Geometry"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Geometry"
+          }
         },
-        "ground_clearance": {
+        "groundClearance": {
           "type": "number",
           "description": "The minimum distance between the lowest point of the chassis and the ground."
         },
-        "reference_position": {
-          "$ref": "#/definitions/Position",
-          "description": "The reference position of the root coordinate system of the vehicle part. The root coordinate system refers to the primary reference frame used to define the position and orientation of the vehicle part in a three-dimsional space."
+        "referencePose": {
+          "$ref": "#/definitions/Pose",
+          "description": "The reference pose of the root coordinate system of the vehicle segment. The root coordinate system refers to the primary reference frame used to define the pose of the vehicle segment in 3D space."
         },
         "axles": {
           "type": "array",
-          "description": "Represents the axles of the vehicle part.",
+          "description": "Represents the axles of the vehicle segment.",
           "items": {
             "$ref": "#/definitions/Axle"
           }
         },
-        "front_joint": {
+        "frontJoint": {
           "$ref": "#/definitions/Joint",
-          "description": "Represents the front joint of the vehicle part."
+          "description": "Represents the front joint of the vehicle segment."
         },
-        "rear_joint": {
+        "rearJoint": {
           "$ref": "#/definitions/Joint",
-          "description": "Represents the rear joint of the vehicle part."
+          "description": "Represents the rear joint of the vehicle segment."
         }
       },
       "required": [
         "id",
         "geometry",
-        "reference_position",
+        "referencePose",
         "axles"
       ]
     },
@@ -255,9 +327,9 @@
           "type": "string",
           "description": "The name or identifier of the wheel, e.g. 'left_wheel'."
         },
-        "position": {
-          "$ref": "#/definitions/Position",
-          "description": "The position of the wheel with regard to the coordinate system of the axle which the wheel is mounted on."
+        "pose": {
+          "$ref": "#/definitions/Pose",
+          "description": "The pose of the wheel's center with regard to the pose of the axle which the wheel is mounted on."
         },
         "tire": {
           "type": "object",
@@ -279,7 +351,7 @@
         }
       },
       "required": [
-        "position",
+        "pose",
         "tire"
       ]
     }

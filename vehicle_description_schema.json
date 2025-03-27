@@ -6,7 +6,7 @@
     "version": {
       "type": "string",
       "description": "The version of the vehicle description format (MAJOR.MINOR)",
-      "default": 0.1,
+      "default": 0.2,
       "readOnly": true
     },
     "vehicleDescription": {
@@ -164,7 +164,7 @@
       ]
     },
     "Joint": {
-      "description": "Represents the rear joint of the vehicle segment.",
+      "description": "Represents a hinge joint where two vehicle segments can be linked together.",
       "title": "Joint",
       "type": "object",
       "properties": {
@@ -208,7 +208,7 @@
       ]
     },
     "Pose": {
-      "description": "The reference pose of the root coordinate system of the vehicle segment. The root coordinate system refers to the primary reference frame used to define the pose of the vehicle segment in 3D space.",
+      "description": "Represents a 3D pose.",
       "title": "Pose",
       "type": "object",
       "properties": {
@@ -283,6 +283,7 @@
         },
         "geometry": {
           "type": "array",
+          "description": "An array of geometry primitives or meshes describing the physical dimensions of the vehicle segment.",
           "items": {
             "$ref": "#/definitions/Geometry"
           }

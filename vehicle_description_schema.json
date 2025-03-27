@@ -124,7 +124,7 @@
     "Geometry": {
       "title": "Geometry",
       "type": "object",
-      "description": "Represents the 3D geometry of a vehicle segment or a part of the vehicle segment, e.g. the bounding box of the chassis. \n\nPossible types:\n\n* Box: The box geometry represents a cuboid with a fixed length, width and height. The anchor point of the box is its geometric center, also known as centroid. \n* Mesh: The mesh geometry represents a 3D mesh specified by the file path to the 3D mesh file.",
+      "description": "Represents the 3D geometry of a vehicle segment or a part of the vehicle segment, e.g. the bounding box of the chassis. \n\nPossible types:\n\n* Box: The box geometry represents a cuboid with a fixed length, width and height. The anchor point of the box is its geometric center, also known as centroid. \n* Mesh: The mesh geometry represents a 3D mesh specified by the file path to the 3D mesh file. The anchor point of the mesh is equal to its origin.",
       "properties": {
         "type": {
           "type": "string",
